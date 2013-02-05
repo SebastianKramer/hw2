@@ -9,7 +9,8 @@ class MoviesController < ApplicationController
   def index
     #debugger
     # order(:release_date) or order(:title)
-    @movies = Movie.order(params[:order])
+    @order = params[:order]
+    @movies = Movie.order(@order)
   end
 
   def new
