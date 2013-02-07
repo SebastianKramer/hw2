@@ -9,6 +9,7 @@ class MoviesController < ApplicationController
   def index
     #debugger
     # order(:release_date) or order(:title)
+    @all_ratings = ['G','PG','PG-13','R']
     @order = params[:order]
     @movies = Movie.order(@order)
   end
