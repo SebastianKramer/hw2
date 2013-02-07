@@ -7,11 +7,21 @@ class MoviesController < ApplicationController
   end
 
   def index
-    #debugger
-    # order(:release_date) or order(:title)
-    @all_ratings = ['G','PG','PG-13','R']
-    @order = params[:order]
-    @movies = Movie.order(@order)
+    
+    @all_ratings = Movie.all_ratings
+    
+    @order = params[:order] # may be nil
+
+    if params[:ratings].nil?
+      @checked_ratings = @all_ratings # defaults to all ratings
+    else
+      @checked_ratings = params[:ratings].keys  if params[:ratings].is_a? Hash
+      @checked_ratings = params[:ratings]       if params[:ratings].is_a? Array
+    end                        
+
+    @movies = Movie.where(:rating => @checked_ratings).order(@order) #Movie.order(@order)
+
+    
   end
 
   def new
