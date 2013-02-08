@@ -36,6 +36,8 @@ class MoviesController < ApplicationController
       # only sesion has info
       @checked_ratings = session[:ratings]
       #@order   = session[:order]
+      flash.keep
+      redirect_to movies_path(:order => @order, :ratings => @checked_ratings)
     end
                       
 
