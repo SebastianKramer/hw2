@@ -10,14 +10,34 @@ class MoviesController < ApplicationController
     
     @all_ratings = Movie.all_ratings
     
-    @order = params[:order] # may be nil
-
-    if params[:ratings].nil?
-      @checked_ratings = @all_ratings # defaults to all ratings
+    if params[:order].nil?
+      # use session info 
+      @order = session[:order] # may be nil
     else
+      @order = params[:order]
+      session[:order] = @order
+    end 
+    
+    if params[:ratings].nil? && session[:ratings].nil?  
+        # neither params nor session have info about selected ratings
+        @checked_ratings = @all_ratings # defaults to all ratings
+
+    elsif session[:ratings].nil? || ( !params[:ratings].nil? && !session[:ratings].nil? )
+      # only the session has info about seleted ratings
+      # or newer params info overrides old session info
+      # use the info from params to create next view
       @checked_ratings = params[:ratings].keys  if params[:ratings].is_a? Hash
       @checked_ratings = params[:ratings]       if params[:ratings].is_a? Array
-    end                        
+      # save the new info from params in session
+      session[:ratings] = @checked_ratings
+      #session[:order]   = @order
+    
+    elsif params[:ratings].nil?
+      # only sesion has info
+      @checked_ratings = session[:ratings]
+      #@order   = session[:order]
+    end
+                      
 
     @movies = Movie.where(:rating => @checked_ratings).order(@order) #Movie.order(@order)
 
